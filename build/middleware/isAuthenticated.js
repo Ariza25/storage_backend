@@ -1,44 +1,34 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.isAuthenticated = void 0;
 const jsonwebtoken_1 = require("jsonwebtoken");
-function isAuthenticated(req, res) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const authToken = req.headers.authorization;
-        if (!authToken) {
-            res.code(401).send({ error: "Token missing" });
-            return;
+async function isAuthenticated(req, res) {
+    const authToken = req.headers.authorization;
+    if (!authToken) {
+        res.code(401).send({ error: "Token missing" });
+        return;
+    }
+    const parts = authToken.split(" ");
+    if (parts.length !== 2) {
+        res.code(401).send({ error: "Token error" });
+        return;
+    }
+    const [scheme, token] = parts;
+    if (!/^Bearer$/i.test(scheme)) {
+        res.code(401).send({ error: "Token malformatted" });
+        return;
+    }
+    try {
+        const secret = process.env.JWT_SECRET;
+        if (!secret) {
+            throw new Error("JWT_SECRET is not defined");
         }
-        const parts = authToken.split(" ");
-        if (parts.length !== 2) {
-            res.code(401).send({ error: "Token error" });
-            return;
-        }
-        const [scheme, token] = parts;
-        if (!/^Bearer$/i.test(scheme)) {
-            res.code(401).send({ error: "Token malformatted" });
-            return;
-        }
-        try {
-            const secret = process.env.JWT_SECRET;
-            if (!secret) {
-                throw new Error("JWT_SECRET is not defined");
-            }
-            const { sub } = (0, jsonwebtoken_1.verify)(token, secret);
-            return (sub);
-        }
-        catch (err) {
-            res.code(401).send({ error: "Token invalid" });
-        }
-    });
+        const { sub } = (0, jsonwebtoken_1.verify)(token, secret);
+        return (sub);
+    }
+    catch (err) {
+        res.code(401).send({ error: "Token invalid" });
+    }
 }
 exports.isAuthenticated = isAuthenticated;
+//# sourceMappingURL=isAuthenticated.js.map

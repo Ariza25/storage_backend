@@ -1,36 +1,24 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateCustomerService = void 0;
-const prisma_1 = __importDefault(require("../../prisma"));
+const tslib_1 = require("tslib");
+const prisma_1 = tslib_1.__importDefault(require("../../prisma"));
 class CreateCustomerService {
-    execute({ name, email, address, contact }) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (!name || !email || !address || !contact) {
-                throw new Error("preencha todos os campos");
+    async execute({ name, email, address, contact }) {
+        if (!name || !email || !address || !contact) {
+            throw new Error("preencha todos os campos");
+        }
+        const customer = await prisma_1.default.customer.create({
+            data: {
+                name,
+                email,
+                address,
+                contact,
+                status: true
             }
-            const customer = yield prisma_1.default.customer.create({
-                data: {
-                    name,
-                    email,
-                    address,
-                    contact,
-                    status: true
-                }
-            });
-            return customer;
         });
+        return customer;
     }
 }
 exports.CreateCustomerService = CreateCustomerService;
+//# sourceMappingURL=CreateCustomerService.js.map
