@@ -14,7 +14,7 @@ const start = async () => {
     await app.register(routes)
 
         try{
-            await app.listen({port: 3333, host: "0.0.0.0"})
+            await app.listen({port: 3333})
         }catch(err){
             process.exit(1)
         }
